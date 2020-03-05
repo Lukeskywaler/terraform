@@ -43,7 +43,7 @@ func TransformProviders(providers []string, concrete ConcreteProviderNodeFunc, c
 //
 // Name returns the full name of the provider in the config.
 type GraphNodeProvider interface {
-	GraphNodeSubPath
+	GraphNodeModuleInstance
 	ProviderAddr() addrs.AbsProviderConfig
 	Name() string
 }
@@ -52,7 +52,7 @@ type GraphNodeProvider interface {
 // provider must implement. The CloseProviderName returned is the name of
 // the provider they satisfy.
 type GraphNodeCloseProvider interface {
-	GraphNodeSubPath
+	GraphNodeModuleInstance
 	CloseProviderAddr() addrs.AbsProviderConfig
 }
 
@@ -194,7 +194,7 @@ func (t *ProviderTransformer) Transform(g *Graph) error {
 			p := req.Addr
 			target := m[key]
 
-			_, ok := v.(GraphNodeSubPath)
+			_, ok := v.(GraphNodeModuleInstance)
 			if !ok && target == nil {
 				// No target and no path to traverse up from
 				diags = diags.Append(fmt.Errorf("%s: provider %s couldn't be found", dag.VertexName(v), p))
@@ -407,7 +407,7 @@ func (t *MissingProviderTransformer) Transform(g *Graph) error {
 // ParentProviderTransformer connects provider nodes to their parents.
 //
 // This works by finding nodes that are both GraphNodeProviders and
-// GraphNodeSubPath. It then connects the providers to their parent
+// GraphNodeModuleInstance. It then connects the providers to their parent
 // path. The parent provider is always at the root level.
 type ParentProviderTransformer struct{}
 
@@ -506,7 +506,7 @@ func (n *graphNodeCloseProvider) Name() string {
 	return n.Addr.String() + " (close)"
 }
 
-// GraphNodeSubPath impl.
+// GraphNodeModuleInstance impl.
 func (n *graphNodeCloseProvider) Path() addrs.ModuleInstance {
 	return n.Addr.Module
 }
