@@ -62,7 +62,7 @@ type GraphNodeCloseProvider interface {
 // or in an ancestor module, with the resulting absolute address passed to
 // SetProvider.
 type GraphNodeProviderConsumer interface {
-	GraphNodeSubPath
+	GraphNodeModuleInstance
 	// ProvidedBy returns the address of the provider configuration the node
 	// refers to. If the returned "exact" value is true, this address will
 	// be taken exactly. If "exact" is false, a provider configuration from
